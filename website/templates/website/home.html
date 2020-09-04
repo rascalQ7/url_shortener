@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tiniest url site</title>
+    <title>URL shortener</title>
 </head>
 <body>
 <h1>Hey</h1>
@@ -11,5 +11,6 @@
     {% csrf_token %}
     <button type="submit">Generate tiny url</button>
 </form>
+<a href={{ quick_link }} target="_blank"> {{ quick_link }} </a>
 </body>
 </html>
