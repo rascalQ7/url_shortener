@@ -6,5 +6,5 @@ from tiny_urls.views import external_redirection
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
-    path('r/<str:tiny_url>', external_redirection),
+    path('<str:tiny_url>', external_redirection),
 ]

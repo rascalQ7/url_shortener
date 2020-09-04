@@ -23,7 +23,7 @@ def convert_number_to_base_string(url_id):
     return base_string
 
 
-TinyURLForm = modelform_factory(TinyURL, exclude=['id', 'name'])
+TinyURLForm = modelform_factory(TinyURL, exclude=['id', 'name', 'created'])
 
 
 def home(request):
