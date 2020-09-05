@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>URL shortener</title>
-</head>
-<body>
-<p> {{ validation_message }} </p>
-<form method="post">
-    {% csrf_token %}
-    <li><input type="text" name="username" placeholder="Username" required/></li>
-    <li><input type="password" name="password" placeholder="Password" required/></li>
-    <li><input type="email" name="email" placeholder="Email" required/></li>
-    <button type="submit">Sign up</button>
-</form>
-<a href="{% url 'login' %}">Login</a>
-</body>
-</html>
+{% extends 'website/base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <li><input type="text" name="username" placeholder="Username" required/></li>
+        <li><input type="password" name="password" placeholder="Password" required/></li>
+        <li><input type="email" name="email" placeholder="Email" required/></li>
+        <button type="submit">Sign up</button>
+    </form>
+    <a href="{% url 'login' %}">Login</a>
+{% endblock %}

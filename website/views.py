@@ -28,6 +28,11 @@ def home(request):
     return render(request, "website/home.html", {"url_form": url_form, "quick_link": quick_link})
 
 
+@login_required
+def dashboard(request):
+    return render(request, 'website/dashboard.html')
+
+
 def login_user(request):
     if request.user.is_authenticated:
         return redirect(home)
@@ -39,7 +44,10 @@ def login_user(request):
             validation_message = "Incorrect username or password"
         else:
             login(request, user)
-            return redirect(home)
+            next_redirection = request.GET.get('next')
+            if next_redirection is None:
+                return redirect(home)
+            return redirect(request.GET.get('next'))
     else:
         validation_message = ''
 
