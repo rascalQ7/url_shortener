@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>URL shortener</title>
+</head>
+<body>
+<p> {{ validation_message }} </p>
+<form method="post">
+    <table> {{ sing_up_form }} </table>
+    {% csrf_token %}
+    <button type="submit">sign up</button>
+</form>
+<a href="{% url 'login' %}">login</a>
+</body>
+</html>

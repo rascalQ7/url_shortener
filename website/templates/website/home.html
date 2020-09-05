@@ -5,8 +5,9 @@
     <title>URL shortener</title>
 </head>
 <body>
+<p>{{ user.username }} (<a href="{% url 'logout' %}">logout</a>)</p>
 <form method="post">
-    <table> {{ form }} </table>
+    <table> {{ url_form }} </table>
     {% csrf_token %}
     <button type="submit">Generate tiny url</button>
 </form>
