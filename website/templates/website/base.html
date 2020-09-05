@@ -6,7 +6,10 @@
     </head>
     <body>
         {% if user.is_authenticated %}
-            <p>{{ user.username }} (<a href="{% url 'logout' %}">logout</a>)</p>
+            <p>
+                {{ user.username }} (<a href="{% url 'logout' %}">logout</a>)</br>
+                <a href="{% url 'home' %}">generator</a> | <a href="{% url 'dashboard' %}">dashboard</a>
+            </p>
         {% else %}
             <p> {{ validation_message }} </p>
         {% endif %}
