@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>URL shortener</title>
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+            <p>{{ user.username }} (<a href="{% url 'logout' %}">logout</a>)</p>
+        {% else %}
+            <p> {{ validation_message }} </p>
+        {% endif %}
+        {% block content %}
+        {% endblock content %}
+    </body>
+</html>

@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>URL shortener</title>
-</head>
-<body>
-<p> {{ validation_message }} </p>
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" />
-    <input type="password" name="password" placeholder="Password" />
-    <button type="submit">Login</button>
-</form>
-<a href="{% url 'sign_up' %}">Sign up</a>
-</body>
-</html>
+{% extends 'website/base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" />
+        <input type="password" name="password" placeholder="Password" />
+        <button type="submit">Login</button>
+    </form>
+    <a href="{% url 'sign_up' %}">Sign up</a>
+{% endblock %}

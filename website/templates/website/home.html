@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>URL shortener</title>
-</head>
-<body>
-<p>{{ user.username }} (<a href="{% url 'logout' %}">logout</a>)</p>
-<form method="post">
-    <table> {{ url_form }} </table>
-    {% csrf_token %}
-    <button type="submit">Generate tiny url</button>
-</form>
-<a href={{ quick_link }} target="_blank"> {{ quick_link }} </a>
-</body>
-</html>
+{% extends 'website/base.html' %}
+
+{% block content %}
+    <form method="post">
+        <table> {{ url_form }} </table>
+        {% csrf_token %}
+        <button type="submit">Generate tiny url</button>
+    </form>
+    <a href={{ quick_link }} target="_blank"> {{ quick_link }} </a>
+{% endblock %}
