@@ -1,6 +1,6 @@
 from django.test import TestCase
 from tiny_urls.models import TinyURL
-from url_shortener import constant
+from tiny_urls import constant
 
 
 class TestViews(TestCase):

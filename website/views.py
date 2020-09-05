@@ -4,8 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-
-from url_shortener import constant
+from tiny_urls import constant
 from tiny_urls.models import TinyURL
 
 
@@ -30,7 +29,8 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'website/dashboard.html')
+    urls = TinyURL.objects.filter(creator=request.user, is_active=True)
+    return render(request, 'website/dashboard.html', {"urls": urls, "dns": constant.DNS})
 
 
 def login_user(request):
