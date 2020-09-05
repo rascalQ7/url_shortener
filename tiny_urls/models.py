@@ -1,12 +1,16 @@
 from django.db import models
-from url_shortener import constant
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+
+from url_shortener import constant
 
 
 class TinyURL(models.Model):
     id = models.IntegerField(primary_key=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(unique=True, max_length=10)
     original_url = models.CharField(max_length=1000)
+    active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

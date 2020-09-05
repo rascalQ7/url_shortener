@@ -9,7 +9,7 @@ from url_shortener import constant
 from tiny_urls.models import TinyURL
 
 
-TinyURLForm = modelform_factory(TinyURL, exclude=['id', 'name', 'created'])
+TinyURLForm = modelform_factory(TinyURL, fields=['original_url'])
 
 
 @login_required
@@ -17,7 +17,7 @@ def home(request):
     if request.method == "POST":
         url_id = TinyURL.generate_id()
         id_as_base_string = TinyURL.convert_number_to_base_string(url_id)
-        auto_generated_fields = TinyURL(id=url_id, name=id_as_base_string)
+        auto_generated_fields = TinyURL(id=url_id, name=id_as_base_string, creator=request.user)
         url_form = TinyURLForm(request.POST, instance=auto_generated_fields)
         if url_form.is_valid():
             url_form.save()
