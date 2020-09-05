@@ -1,15 +1,26 @@
 from django.shortcuts import render
 from django.forms import modelform_factory
-import random
+from django.core.exceptions import ObjectDoesNotExist
 from tiny_urls.models import TinyURL
 from url_shortener import constant
 
 
+def linear_congruential_generator(seed):
+    modulus = constant.BASE_RANGE_UPPER - constant.BASE_RANGE_LOWER
+    lcg = (seed * constant.MULTIPLIER + constant.INCREMENT) % modulus
+    new_seed = lcg + constant.BASE_RANGE_LOWER
+    return new_seed
+
+
 def generate_id():
-    random_id = random.randint(constant.BASE_RANGE_LOWER, constant.BASE_RANGE_UPPER)
-    while TinyURL.objects.filter(pk=random_id).exists():
-        random_id = random.randint(constant.BASE_RANGE_LOWER, constant.BASE_RANGE_UPPER)
-    return random_id
+    try:
+        latest_record_id = TinyURL.objects.latest('created').id
+    except ObjectDoesNotExist:
+        latest_record_id = constant.BASE_RANGE_LOWER
+    pseudo_random_number = linear_congruential_generator(latest_record_id)
+    while TinyURL.objects.filter(pk=pseudo_random_number).exists():
+        pseudo_random_number = linear_congruential_generator(latest_record_id+1)
+    return pseudo_random_number
 
 
 def convert_number_to_base_string(url_id):
