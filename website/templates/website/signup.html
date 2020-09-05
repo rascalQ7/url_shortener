@@ -7,10 +7,12 @@
 <body>
 <p> {{ validation_message }} </p>
 <form method="post">
-    <table> {{ sing_up_form }} </table>
     {% csrf_token %}
-    <button type="submit">sign up</button>
+    <li><input type="text" name="username" placeholder="Username" required/></li>
+    <li><input type="password" name="password" placeholder="Password" required/></li>
+    <li><input type="email" name="email" placeholder="Email" required/></li>
+    <button type="submit">Sign up</button>
 </form>
-<a href="{% url 'login' %}">login</a>
+<a href="{% url 'login' %}">Login</a>
 </body>
 </html>

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.forms import modelform_factory
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
 from url_shortener import constant
@@ -11,6 +12,7 @@ from tiny_urls.models import TinyURL
 TinyURLForm = modelform_factory(TinyURL, exclude=['id', 'name', 'created'])
 
 
+@login_required
 def home(request):
     if request.method == "POST":
         url_id = TinyURL.generate_id()
@@ -26,10 +28,9 @@ def home(request):
     return render(request, "website/home.html", {"url_form": url_form, "quick_link": quick_link})
 
 
-UserLoginForm = modelform_factory(User, fields=['username', 'password'])
-
-
 def login_user(request):
+    if request.user.is_authenticated:
+        return redirect(home)
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -41,11 +42,8 @@ def login_user(request):
             return redirect(home)
     else:
         validation_message = ''
-        login_form = UserLoginForm()
-    return render(request, 'website/login.html', {"login_form": login_form, "validation_message": validation_message})
 
-
-UserSignUpForm = modelform_factory(User, fields=['username', 'password', 'email'])
+    return render(request, 'website/login.html', {"validation_message": validation_message})
 
 
 def logout_user(request):
@@ -54,26 +52,21 @@ def logout_user(request):
 
 
 def sign_up_user(request):
+    if request.user.is_authenticated:
+        return redirect(home)
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         email = request.POST['email']
         try:
             User.objects.create_user(username=username, password=password, email=email)
-        except IntegrityError as e:
-            validation_message = e
-            sing_up_form = UserSignUpForm()
+        except IntegrityError:
+            validation_message = 'Username already exist'
             return render(request, 'website/signup.html',
-                          {"sing_up_form": sing_up_form, "validation_message": validation_message})
+                          {"validation_message": validation_message})
         user = authenticate(username=username, password=password)
-        if user is None:
-            validation_message = "User with this username or email address already exist"
-        else:
-            authenticate(username=username, password=password)
-            login(request, user)
-            return redirect(home)
-    else:
-        validation_message = ''
-        sing_up_form = UserSignUpForm()
+        login(request, user)
+        return redirect(home)
+    validation_message = ''
     return render(request, 'website/signup.html',
-                  {"sing_up_form": sing_up_form, "validation_message": validation_message})
+                  {"validation_message": validation_message})
