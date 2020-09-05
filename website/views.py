@@ -1,52 +1,72 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.forms import modelform_factory
-from django.core.exceptions import ObjectDoesNotExist
-from tiny_urls.models import TinyURL
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+
 from url_shortener import constant
-
-
-def linear_congruential_generator(seed):
-    modulus = constant.BASE_RANGE_UPPER - constant.BASE_RANGE_LOWER
-    lcg = (seed * constant.MULTIPLIER + constant.INCREMENT) % modulus
-    new_seed = lcg + constant.BASE_RANGE_LOWER
-    return new_seed
-
-
-def generate_id():
-    try:
-        latest_record_id = TinyURL.objects.latest('created').id
-    except ObjectDoesNotExist:
-        latest_record_id = constant.BASE_RANGE_LOWER
-    pseudo_random_number = linear_congruential_generator(latest_record_id)
-    while TinyURL.objects.filter(pk=pseudo_random_number).exists():
-        pseudo_random_number = linear_congruential_generator(latest_record_id+1)
-    return pseudo_random_number
-
-
-def convert_number_to_base_string(url_id):
-    number = url_id
-    divider = len(constant.BASE)
-    base_string = ''
-    while number:
-        remainder = number % divider
-        base_string += constant.BASE[int(remainder)]
-        number //= divider
-    return base_string
+from tiny_urls.models import TinyURL
 
 
 TinyURLForm = modelform_factory(TinyURL, exclude=['id', 'name', 'created'])
 
 
+@login_required
 def home(request):
-    quick_link = ''
     if request.method == "POST":
-        url_id = generate_id()
-        id_as_base_string = convert_number_to_base_string(url_id)
+        url_id = TinyURL.generate_id()
+        id_as_base_string = TinyURL.convert_number_to_base_string(url_id)
         auto_generated_fields = TinyURL(id=url_id, name=id_as_base_string)
-        form = TinyURLForm(request.POST, instance=auto_generated_fields)
-        if form.is_valid():
-            form.save()
+        url_form = TinyURLForm(request.POST, instance=auto_generated_fields)
+        if url_form.is_valid():
+            url_form.save()
             quick_link = constant.DNS + auto_generated_fields.name
     else:
-        form = TinyURLForm()
-    return render(request, "website/home.html", {"form": form, "quick_link": quick_link})
+        quick_link = ''
+        url_form = TinyURLForm()
+    return render(request, "website/home.html", {"url_form": url_form, "quick_link": quick_link})
+
+
+def login_user(request):
+    if request.user.is_authenticated:
+        return redirect(home)
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is None:
+            validation_message = "Incorrect username or password"
+        else:
+            login(request, user)
+            return redirect(home)
+    else:
+        validation_message = ''
+
+    return render(request, 'website/login.html', {"validation_message": validation_message})
+
+
+def logout_user(request):
+    logout(request)
+    return redirect(login_user)
+
+
+def sign_up_user(request):
+    if request.user.is_authenticated:
+        return redirect(home)
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        email = request.POST['email']
+        try:
+            User.objects.create_user(username=username, password=password, email=email)
+        except IntegrityError:
+            validation_message = 'Username already exist'
+            return render(request, 'website/signup.html',
+                          {"validation_message": validation_message})
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        return redirect(home)
+    validation_message = ''
+    return render(request, 'website/signup.html',
+                  {"validation_message": validation_message})
