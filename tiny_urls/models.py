@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime
 from tiny_urls import constant
 
 
@@ -14,6 +15,18 @@ class TinyURL(models.Model):
 
     def __str__(self):
         return self.name
+
+    def is_expired(self):
+        return datetime.now() - self.created < datetime.timedelta(seconds=60)
+
+    def is_above_redirection_limit(self):
+        return TinyURLMETA.objects.filter(tinyURL=self).count() <= 10
+
+    @property
+    def is_valid(self):
+        return self.is_expired() \
+               or self.is_above_redirection_limit() \
+               or not self.is_active
 
     @staticmethod
     def linear_congruential_generator(seed):
@@ -43,3 +56,16 @@ class TinyURL(models.Model):
             base_string += constant.BASE[int(remainder)]
             number //= divider
         return base_string
+
+
+class TinyURLMETA(models.Model):
+    tinyURL = models.ForeignKey(TinyURL, on_delete=models.CASCADE)
+    ip_address = models.CharField(max_length=15)
+    http_referer = models.TextField(blank=True)
+    time_stamp = models.DateTimeField(auto_now_add=True)
+
+
+class ConfigItems(models.Model):
+    name = models.CharField(max_length=16)
+    value = models.CharField(max_length=255)
+
