@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 from tiny_urls import constant
 
 
@@ -17,18 +18,18 @@ class TinyURL(models.Model):
         return self.name
 
     def is_expired(self):
-        expires_in = ConfigItems.objects.get(name='url_expiration_period_in_seconds')
-        return datetime.now() - self.created < datetime.timedelta(seconds=expires_in)
+        expires_in = ConfigItem.objects.get(name='url_expiration_period_in_seconds')
+        return self.created < timezone.now() - timedelta(seconds=expires_in.value)
 
     def is_above_redirection_limit(self):
-        redirection_limit = ConfigItems.objects.get(name='redirection_limit')
-        return TinyURLMETA.objects.filter(tinyURL=self).count() <= redirection_limit
+        redirection_limit = ConfigItem.objects.get(name='redirection_limit')
+        return TinyURLMETA.objects.filter(tinyURL=self).count() <= redirection_limit.value
 
     @property
     def is_valid(self):
-        return self.is_expired() \
-               or self.is_above_redirection_limit() \
-               or not self.is_active
+        return not self.is_expired() \
+               or not self.is_above_redirection_limit() \
+               and not self.is_active
 
     @staticmethod
     def linear_congruential_generator(seed):

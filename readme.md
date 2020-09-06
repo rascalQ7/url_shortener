@@ -1,3 +1,9 @@
+#### About:
+
+
+
+#### Start application:
+
 1. Generate database objects:
 
     `python manage.py makemigrations`
@@ -22,3 +28,4 @@
 
     `docker-compose up`
 
+1. Open home page: [localhost](http://localhost:8000)

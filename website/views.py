@@ -30,7 +30,8 @@ def home(request):
 @login_required
 def dashboard(request):
     urls = TinyURL.objects.filter(creator=request.user, is_active=True)
-    return render(request, 'website/dashboard.html', {"urls": urls, "dns": constant.DNS})
+    valid_urls = list(filter(lambda url: url.is_valid, urls))
+    return render(request, 'website/dashboard.html', {"urls": valid_urls, "dns": constant.DNS})
 
 
 def login_user(request):
