@@ -17,10 +17,12 @@ class TinyURL(models.Model):
         return self.name
 
     def is_expired(self):
-        return datetime.now() - self.created < datetime.timedelta(seconds=60)
+        expires_in = ConfigItems.objects.get(name='url_expiration_period_in_seconds')
+        return datetime.now() - self.created < datetime.timedelta(seconds=expires_in)
 
     def is_above_redirection_limit(self):
-        return TinyURLMETA.objects.filter(tinyURL=self).count() <= 10
+        redirection_limit = ConfigItems.objects.get(name='redirection_limit')
+        return TinyURLMETA.objects.filter(tinyURL=self).count() <= redirection_limit
 
     @property
     def is_valid(self):
@@ -65,7 +67,9 @@ class TinyURLMETA(models.Model):
     time_stamp = models.DateTimeField(auto_now_add=True)
 
 
-class ConfigItems(models.Model):
-    name = models.CharField(max_length=16)
-    value = models.CharField(max_length=255)
+class ConfigItem(models.Model):
+    name = models.CharField(max_length=255)
+    value = models.IntegerField()
 
+    def __str__(self):
+        return self.name

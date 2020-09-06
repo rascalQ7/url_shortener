@@ -1,0 +1,19 @@
+[
+  {
+    "model": "tiny_urls.configitem",
+    "pk": 1,
+    "fields": {
+      "name": "url_expiration_period_in_seconds",
+      "value": 60
+    }
+  },
+  {
+    "model": "tiny_urls.configitem",
+    "pk": 2,
+    "fields":
+    {
+      "name": "redirection_limit",
+      "value": 10
+    }
+  }
+]
