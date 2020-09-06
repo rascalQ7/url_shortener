@@ -4,7 +4,7 @@
     {% for url in urls %}
         <li>
             <a href="{% url 'deactivate' url.id 'dashboard' %}">Deactivate</a>
-            <a href={{ dns }}{{ url.name }}>{{ dns }}{{ url.name }}</a>
+            <a href={{ dns }}{{ url.name }} target="_blank">{{ dns }}{{ url.name }}</a>
             {{ url.original_url|truncatechars:50 }}
         </li>
     {% endfor %}
