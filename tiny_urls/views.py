@@ -5,7 +5,7 @@ from .models import TinyURL, TinyURLMETA
 
 def external_redirection(request, tiny_url):
     url = get_object_or_404(TinyURL, name=tiny_url, is_active=True)
-    if url.is_valid:
+    if not url.is_valid:
         raise Http404("Tiny url expired")
     original_url = url.original_url
     if url.original_url.lower().startswith('http://'):
