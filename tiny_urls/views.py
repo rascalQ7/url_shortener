@@ -14,7 +14,7 @@ def external_redirection(request, tiny_url):
         original_url = 'https://' + original_url[7:]
     else:
         original_url = 'http://' + original_url
-    TinyURLMETA.objects.create(tinyURL=url,
+    TinyURLMETA.objects.create(tiny_url=url,
                                ip_address=get_client_ip(request),
                                http_referer=get_http_referer(request))
     return redirect(original_url)
