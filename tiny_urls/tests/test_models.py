@@ -52,7 +52,7 @@ class TaskModelTransactionTestCase(TransactionTestCase):
         url.created = timezone.now()
         url.active = True
         meta.id += 1
-        for meta.id in range(self.urls_redirection_limit + 1):
+        for meta.id in range(self.urls_redirection_limit):
             meta.save()
         self.assertFalse(url.is_valid)
 

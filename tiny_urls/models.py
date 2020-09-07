@@ -23,7 +23,7 @@ class TinyURL(models.Model):
 
     def is_above_redirection_limit(self):
         redirection_limit = ConfigItem.objects.get(name='redirection_limit')
-        return TinyURLMETA.objects.filter(tiny_url=self).count() > redirection_limit.value
+        return TinyURLMETA.objects.filter(tiny_url=self).count() >= redirection_limit.value
 
     @property
     def is_valid(self):
