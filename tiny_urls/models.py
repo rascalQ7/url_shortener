@@ -23,13 +23,13 @@ class TinyURL(models.Model):
 
     def is_above_redirection_limit(self):
         redirection_limit = ConfigItem.objects.get(name='redirection_limit')
-        return TinyURLMETA.objects.filter(tinyURL=self).count() <= redirection_limit.value
+        return TinyURLMETA.objects.filter(tiny_url=self).count() > redirection_limit.value
 
     @property
     def is_valid(self):
         return not self.is_expired() \
-               or not self.is_above_redirection_limit() \
-               and not self.is_active
+               and not self.is_above_redirection_limit() \
+               and self.is_active
 
     @staticmethod
     def linear_congruential_generator(seed):
@@ -62,7 +62,7 @@ class TinyURL(models.Model):
 
 
 class TinyURLMETA(models.Model):
-    tinyURL = models.ForeignKey(TinyURL, on_delete=models.CASCADE)
+    tiny_url = models.ForeignKey(TinyURL, on_delete=models.CASCADE)
     ip_address = models.CharField(max_length=15)
     http_referer = models.TextField(blank=True)
     time_stamp = models.DateTimeField(auto_now_add=True)

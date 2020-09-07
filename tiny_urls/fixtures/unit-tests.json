@@ -1,0 +1,60 @@
+[
+  {
+    "model": "tiny_urls.configitem",
+    "pk": 1,
+    "fields": {
+      "name": "url_expiration_period_in_seconds",
+      "value": 60
+    }
+  },
+  {
+    "model": "tiny_urls.configitem",
+    "pk": 2,
+    "fields":
+    {
+      "name": "redirection_limit",
+      "value": 10
+    }
+  },
+  {
+     "model": "auth.user",
+     "pk": 1,
+     "fields":
+     {
+        "password": "pbkdf2_sha256$216000$t1jT7GrFvVlP$HW7AoSYygliDtbUVl0aWMyGV43UquIOSGhnbbF/GnGk=",
+        "last_login": "2020-09-06T08:46:18.275Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-09-06T08:45:35.494Z",
+        "groups": [],
+        "user_permissions": []
+     }
+  },
+  {
+   "model": "tiny_urls.tinyurl",
+   "pk": 4816744066,
+   "fields": {
+    "creator": 1,
+    "name": "QAZyF5",
+    "original_url": "one.lt",
+    "is_active": true,
+    "created": "2020-09-06T09:18:08.382Z"
+   }
+  },
+  {
+    "model": "tiny_urls.tinyurlmeta",
+    "pk": 1,
+    "fields":
+    {
+      "tiny_url": 4816744066,
+      "ip_address": "127.0.0.0",
+      "http_referer": "www.google.com",
+      "time_stamp": "2020-09-06T09:18:08.382Z"
+    }
+  }
+]
